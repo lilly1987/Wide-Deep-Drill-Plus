@@ -43,15 +43,17 @@ namespace WideDeepDrillPlus
 
     public sealed class WideDeepDrillPlusSettings : ModSettings
     {
-        internal const float MinWorkPerTick = 0.01f;
-        internal const float MaxWorkPerTick = 500f;
+        internal const float MinWorkSpeedFactor = 0.2f;
+        internal const float MaxWorkSpeedFactor = 500f;
+        internal const float MinWorkPerTick = 1f;
+        internal const float MaxWorkPerTick = 60000f;
 
-        public float workPerTick = 0.5f;
+        public float workPerTick = 1f;
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref workPerTick, "workPerTick", 0.5f);
+            Scribe_Values.Look(ref workPerTick, "workPerTick", MinWorkPerTick);
             workPerTick = Mathf.Clamp(workPerTick, MinWorkPerTick, MaxWorkPerTick);
         }
     }
@@ -83,7 +85,7 @@ namespace WideDeepDrillPlus
     {
         private static bool Prefix(GuangJueDeepDrillSettings __instance, ref float __result)
         {
-            __result = Mathf.Clamp(__instance.workSpeedFactor, 0.2f, 500f);
+            __result = Mathf.Clamp(__instance.workSpeedFactor, WideDeepDrillPlusSettings.MinWorkSpeedFactor, WideDeepDrillPlusSettings.MaxWorkSpeedFactor);
             return false;
         }
     }
@@ -112,9 +114,9 @@ namespace WideDeepDrillPlus
             headerListing.Begin(headerRect);
 
             headerListing.Label("WDDP_SettingsWorkSpeed".Translate());
-            int percent = Mathf.RoundToInt(Mathf.Clamp(__instance.workSpeedFactor, 0.2f, 500f) * 100f);
+            int percent = Mathf.RoundToInt(Mathf.Clamp(__instance.workSpeedFactor, WideDeepDrillPlusSettings.MinWorkSpeedFactor, WideDeepDrillPlusSettings.MaxWorkSpeedFactor) * 100f);
             headerListing.Label("WDDP_SettingsWorkSpeedValue".Translate(percent));
-            DrawSliderWithNumericField(headerListing, ref __instance.workSpeedFactor, ref workSpeedBuffer, 0.2f, 500f);
+            DrawSliderWithNumericField(headerListing, ref __instance.workSpeedFactor, ref workSpeedBuffer, WideDeepDrillPlusSettings.MinWorkSpeedFactor, WideDeepDrillPlusSettings.MaxWorkSpeedFactor);
 
             headerListing.Label("WDDP_SettingsWorkPerTick".Translate());
             float previousWorkPerTick = plusSettings.workPerTick;
