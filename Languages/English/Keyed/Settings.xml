@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <WDDP_SettingsWorkSpeed>Work speed multiplier</WDDP_SettingsWorkSpeed>
+  <WDDP_SettingsWorkSpeedValue>Current: {0}%</WDDP_SettingsWorkSpeedValue>
+  <WDDP_SettingsWorkPerTick>Automated drill work per tick</WDDP_SettingsWorkPerTick>
+</LanguageData>

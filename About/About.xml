@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>Wide Deep Drill Plus</name>
+  <author>Lilly</author>
+  <packageId>Lilly.WideDeepDrillPlus</packageId>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>Natsuki.guangjue.deepdrill</packageId>
+      <displayName>Wide Deep Drill</displayName>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>Natsuki.guangjue.deepdrill</li>
+  </loadAfter>
+  <description>Extends Wide Deep Drill settings with a higher work speed limit and configurable automated drilling speed.</description>
+</ModMetaData>
