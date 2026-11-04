@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill"]/terrainAffordanceNeeded</xpath>
+        <value>
+          <terrainAffordanceNeeded>Walkable</terrainAffordanceNeeded>
+        </value>
+      </li>
+      <li Class="PatchOperationRemove">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill"]/placeWorkers/li[text()="PlaceWorker_InvalidOverSubstructure"]</xpath>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill_Auto"]/terrainAffordanceNeeded</xpath>
+        <value>
+          <terrainAffordanceNeeded>Walkable</terrainAffordanceNeeded>
+        </value>
+      </li>
+      <li Class="PatchOperationRemove">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill_Auto"]/placeWorkers/li[text()="PlaceWorker_InvalidOverSubstructure"]</xpath>
+      </li>
+    </operations>
+  </Operation>
+</Patch>
