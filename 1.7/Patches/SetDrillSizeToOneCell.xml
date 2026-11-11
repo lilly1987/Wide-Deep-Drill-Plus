@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationSequence">
+    <operations>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill"]/size</xpath>
+        <value>
+          <size>(1,1)</size>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill_Auto"]/size</xpath>
+        <value>
+          <size>(1,1)</size>
+        </value>
+      </li>
+    </operations>
+  </Operation>
+</Patch>

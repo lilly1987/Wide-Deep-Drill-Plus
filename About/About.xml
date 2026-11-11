@@ -21,5 +21,6 @@
     <li>brrainz.harmony</li>
     <li>Natsuki.guangjue.deepdrill</li>
   </loadAfter>
-  <description>Extends Wide Deep Drill settings with a higher work speed limit and configurable automated drilling speed.</description>
-<modVersion>1.0.1</modVersion></ModMetaData>
+  <description>Extends Wide Deep Drill settings and changes both drill structures to occupy one cell.</description>
+  <modVersion>1.0.2</modVersion>
+</ModMetaData>
