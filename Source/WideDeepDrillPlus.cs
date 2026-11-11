@@ -11,15 +11,26 @@ namespace WideDeepDrillPlus
     public sealed class WideDeepDrillPlusMod : Mod
     {
         public static WideDeepDrillPlusSettings Settings;
+        public static WideDeepDrillPlusMod Instance { get; private set; }
 
         public WideDeepDrillPlusMod(ModContentPack content) : base(content)
         {
+            Instance = this;
             Settings = GetSettings<WideDeepDrillPlusSettings>();
+            DrillSettingsWindowPatch.ApplyAutoDrillWorkPerTick();
         }
 
         public override string SettingsCategory()
         {
-            return null;
+            return "WDDP_SettingsCategory".Translate();
+        }
+
+        public override void DoSettingsWindowContents(Rect inRect)
+        {
+            Listing_Standard listing = new Listing_Standard();
+            listing.Begin(inRect);
+            DrillSettingsWindowPatch.DrawWorkSettings(listing, Settings);
+            listing.End();
         }
 
         internal static void ApplyWorkPerTick(ThingDef def)
@@ -48,12 +59,15 @@ namespace WideDeepDrillPlus
         internal const float MinWorkPerTick = 1f;
         internal const float MaxWorkPerTick = 60000f;
 
+        public float workSpeedFactor = 1f;
         public float workPerTick = 1f;
 
         public override void ExposeData()
         {
             base.ExposeData();
+            Scribe_Values.Look(ref workSpeedFactor, "workSpeedFactor", 1f);
             Scribe_Values.Look(ref workPerTick, "workPerTick", MinWorkPerTick);
+            workSpeedFactor = Mathf.Clamp(workSpeedFactor, MinWorkSpeedFactor, MaxWorkSpeedFactor);
             workPerTick = Mathf.Clamp(workPerTick, MinWorkPerTick, MaxWorkPerTick);
         }
     }
@@ -85,27 +99,11 @@ namespace WideDeepDrillPlus
     {
         private static bool Prefix(GuangJueDeepDrillSettings __instance, ref float __result)
         {
-            __result = Mathf.Clamp(__instance.workSpeedFactor, WideDeepDrillPlusSettings.MinWorkSpeedFactor, WideDeepDrillPlusSettings.MaxWorkSpeedFactor);
+            float workSpeedFactor = WideDeepDrillPlusMod.Settings == null
+                ? __instance.workSpeedFactor
+                : WideDeepDrillPlusMod.Settings.workSpeedFactor;
+            __result = Mathf.Clamp(workSpeedFactor, WideDeepDrillPlusSettings.MinWorkSpeedFactor, WideDeepDrillPlusSettings.MaxWorkSpeedFactor);
             return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(GuangJueDeepDrillSettings), nameof(GuangJueDeepDrillSettings.ExposeData))]
-    internal static class DrillSettingsPersistencePatch
-    {
-        private static void Postfix()
-        {
-            WideDeepDrillPlusSettings settings = WideDeepDrillPlusMod.Settings;
-            if (settings == null)
-            {
-                return;
-            }
-
-            Scribe_Values.Look(ref settings.workPerTick, "WDDP_workPerTick", WideDeepDrillPlusSettings.MinWorkPerTick);
-            settings.workPerTick = Mathf.Clamp(
-                settings.workPerTick,
-                WideDeepDrillPlusSettings.MinWorkPerTick,
-                WideDeepDrillPlusSettings.MaxWorkPerTick);
         }
     }
 
@@ -117,6 +115,8 @@ namespace WideDeepDrillPlus
         private static List<ThingDef> cachedDeepResources;
         private static Vector2 scrollPosition;
         private static float scrollViewHeight = 300f;
+        private static bool settingsSavePending;
+        private static float lastSettingsChangeTime;
 
         private static bool Prefix(Rect inRect, GuangJueDeepDrillSettings __instance)
         {
@@ -132,18 +132,8 @@ namespace WideDeepDrillPlus
             Listing_Standard headerListing = new Listing_Standard();
             headerListing.Begin(headerRect);
 
-            headerListing.Label("WDDP_SettingsWorkSpeed".Translate());
-            int percent = Mathf.RoundToInt(Mathf.Clamp(__instance.workSpeedFactor, WideDeepDrillPlusSettings.MinWorkSpeedFactor, WideDeepDrillPlusSettings.MaxWorkSpeedFactor) * 100f);
-            headerListing.Label("WDDP_SettingsWorkSpeedValue".Translate(percent));
-            DrawSliderWithNumericField(headerListing, ref __instance.workSpeedFactor, ref workSpeedBuffer, WideDeepDrillPlusSettings.MinWorkSpeedFactor, WideDeepDrillPlusSettings.MaxWorkSpeedFactor);
-
-            headerListing.Label("WDDP_SettingsWorkPerTick".Translate());
-            float previousWorkPerTick = plusSettings.workPerTick;
-            DrawSliderWithNumericField(headerListing, ref plusSettings.workPerTick, ref workPerTickBuffer, WideDeepDrillPlusSettings.MinWorkPerTick, WideDeepDrillPlusSettings.MaxWorkPerTick);
-            if (!Mathf.Approximately(previousWorkPerTick, plusSettings.workPerTick))
-            {
-                ApplyAutoDrillWorkPerTick();
-            }
+            DrawWorkSettings(headerListing, plusSettings);
+            __instance.workSpeedFactor = plusSettings.workSpeedFactor;
 
             headerListing.End();
 
@@ -194,7 +184,50 @@ namespace WideDeepDrillPlus
             }
         }
 
-        private static void ApplyAutoDrillWorkPerTick()
+        internal static void DrawWorkSettings(Listing_Standard listing, WideDeepDrillPlusSettings settings)
+        {
+            float previousWorkSpeedFactor = settings.workSpeedFactor;
+            listing.Label("WDDP_SettingsWorkSpeed".Translate());
+            int percent = Mathf.RoundToInt(settings.workSpeedFactor * 100f);
+            listing.Label("WDDP_SettingsWorkSpeedValue".Translate(percent));
+            DrawSliderWithNumericField(
+                listing,
+                ref settings.workSpeedFactor,
+                ref workSpeedBuffer,
+                WideDeepDrillPlusSettings.MinWorkSpeedFactor,
+                WideDeepDrillPlusSettings.MaxWorkSpeedFactor);
+
+            listing.Label("WDDP_SettingsWorkPerTick".Translate());
+            float previousWorkPerTick = settings.workPerTick;
+            DrawSliderWithNumericField(
+                listing,
+                ref settings.workPerTick,
+                ref workPerTickBuffer,
+                WideDeepDrillPlusSettings.MinWorkPerTick,
+                WideDeepDrillPlusSettings.MaxWorkPerTick);
+            bool workPerTickChanged = !Mathf.Approximately(previousWorkPerTick, settings.workPerTick);
+            if (workPerTickChanged)
+            {
+                ApplyAutoDrillWorkPerTick();
+            }
+
+            if (workPerTickChanged || !Mathf.Approximately(previousWorkSpeedFactor, settings.workSpeedFactor))
+            {
+                settingsSavePending = true;
+                lastSettingsChangeTime = Time.realtimeSinceStartup;
+            }
+
+            if (settingsSavePending && Time.realtimeSinceStartup - lastSettingsChangeTime >= 0.5f)
+                SaveSettings();
+        }
+
+        internal static void SaveSettings()
+        {
+            settingsSavePending = false;
+            WideDeepDrillPlusMod.Instance?.WriteSettings();
+        }
+
+        internal static void ApplyAutoDrillWorkPerTick()
         {
             List<ThingDef> defs = DefDatabase<ThingDef>.AllDefsListForReading;
             for (int i = 0; i < defs.Count; i++)
@@ -225,6 +258,15 @@ namespace WideDeepDrillPlus
 
             cachedDeepResources.Sort((a, b) => string.Compare(a.LabelCap, b.LabelCap, StringComparison.OrdinalIgnoreCase));
             return cachedDeepResources;
+        }
+    }
+
+    [HarmonyPatch(typeof(Dialog_ModSettings), nameof(Dialog_ModSettings.PreClose))]
+    internal static class Dialog_ModSettings_PreClose_Patch
+    {
+        private static void Postfix()
+        {
+            DrillSettingsWindowPatch.SaveSettings();
         }
     }
 

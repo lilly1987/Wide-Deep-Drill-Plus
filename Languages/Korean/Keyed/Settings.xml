@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <WDDP_SettingsCategory>Wide Deep Drill Plus</WDDP_SettingsCategory>
   <WDDP_SettingsWorkSpeed>작업 속도 배율</WDDP_SettingsWorkSpeed>
   <WDDP_SettingsWorkSpeedValue>현재: {0}%</WDDP_SettingsWorkSpeedValue>
   <WDDP_SettingsWorkPerTick>자동 광역 심층 채굴기 틱당 작업량</WDDP_SettingsWorkPerTick>

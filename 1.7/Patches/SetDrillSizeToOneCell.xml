@@ -9,9 +9,21 @@
         </value>
       </li>
       <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill"]/graphicData/drawSize</xpath>
+        <value>
+          <drawSize>(1,1)</drawSize>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
         <xpath>Defs/ThingDef[defName="GuangJueDeepDrill_Auto"]/size</xpath>
         <value>
           <size>(1,1)</size>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill_Auto"]/graphicData/drawSize</xpath>
+        <value>
+          <drawSize>(1,1)</drawSize>
         </value>
       </li>
     </operations>

@@ -21,6 +21,6 @@
     <li>brrainz.harmony</li>
     <li>Natsuki.guangjue.deepdrill</li>
   </loadAfter>
-  <description>Extends Wide Deep Drill settings and changes both drill structures to occupy one cell.</description>
-  <modVersion>1.0.2</modVersion>
+  <description>Extends Wide Deep Drill settings, stores Plus options globally, and changes both drill structures and graphics to one cell.</description>
+  <modVersion>1.0.6</modVersion>
 </ModMetaData>
