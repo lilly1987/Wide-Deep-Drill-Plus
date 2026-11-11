@@ -9,6 +9,12 @@
         </value>
       </li>
       <li Class="PatchOperationReplace">
+        <xpath>Defs/ThingDef[defName="GuangJueDeepDrill"]/interactionCellOffset</xpath>
+        <value>
+          <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+        </value>
+      </li>
+      <li Class="PatchOperationReplace">
         <xpath>Defs/ThingDef[defName="GuangJueDeepDrill"]/graphicData/drawSize</xpath>
         <value>
           <drawSize>(1,1)</drawSize>
