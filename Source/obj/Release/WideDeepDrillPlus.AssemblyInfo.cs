@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WideDeepDrillPlus")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9b6edb4f3fc997ec39ce0fca8163d65a4e417976")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+99cc6ebe539ef89aa80ba62d1c0029a6283d196b")]
 [assembly: System.Reflection.AssemblyProductAttribute("WideDeepDrillPlus")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WideDeepDrillPlus")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

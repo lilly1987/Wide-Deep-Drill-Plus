@@ -90,6 +90,25 @@ namespace WideDeepDrillPlus
         }
     }
 
+    [HarmonyPatch(typeof(GuangJueDeepDrillSettings), nameof(GuangJueDeepDrillSettings.ExposeData))]
+    internal static class DrillSettingsPersistencePatch
+    {
+        private static void Postfix()
+        {
+            WideDeepDrillPlusSettings settings = WideDeepDrillPlusMod.Settings;
+            if (settings == null)
+            {
+                return;
+            }
+
+            Scribe_Values.Look(ref settings.workPerTick, "WDDP_workPerTick", WideDeepDrillPlusSettings.MinWorkPerTick);
+            settings.workPerTick = Mathf.Clamp(
+                settings.workPerTick,
+                WideDeepDrillPlusSettings.MinWorkPerTick,
+                WideDeepDrillPlusSettings.MaxWorkPerTick);
+        }
+    }
+
     [HarmonyPatch(typeof(GuangJueDeepDrillSettings), nameof(GuangJueDeepDrillSettings.DoWindowContents))]
     internal static class DrillSettingsWindowPatch
     {
